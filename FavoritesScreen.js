@@ -1,14 +1,32 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React, { useContext } from 'react';
+import { View, FlatList, Text, StyleSheet } from 'react-native';
+import RecipeCard from '../components/RecipeCard';
+import { FavoritesContext } from '../contexts/FavoritesContext';
 
-export default function MyFoodScreen() {
+export default function FavoritesScreen({ navigation }) {
+  const { favorites } = useContext(FavoritesContext);
+
+  if (favorites.length === 0) {
+    return (
+      <View style={styles.container}>
+        <Text>Nessuna ricetta nei preferiti</Text>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
-      <Text>My Favorite Screen</Text>
+      <FlatList
+        data={favorites}
+        keyExtractor={item => item.id}
+        renderItem={({ item }) => (
+          <RecipeCard recipe={item} onPress={() => navigation.navigate('RecipeDetail', { recipe: item })} />
+        )}
+      />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  container: { flex: 1, padding: 10 },
 });
